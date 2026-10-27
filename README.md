@@ -9,13 +9,30 @@ Landing page para empresas, com foco em pedido de cotação. Produto em destaque
 | Arquivo | O que é |
 | --- | --- |
 | `index.html` | A página inteira (textos, seções, formulário) |
-| `assets/css/styles.css` | Visual (cores da logo, fonte Barlow da loja, layout responsivo) |
-| `assets/js/main.js` | Formulário, envio para o n8n, WhatsApp, eventos de analytics, animações |
-| `assets/img/` | Logo original da loja e fotos do catálogo da loja (versões 1024px e 640px) |
+| `assets/css/styles.css` | Visual: azul da logo, curvas, efeito de inox, animações, layout responsivo (fonte Barlow da loja) |
+| `assets/js/main.js` | Cotação flutuante, seletor de tamanho, assistente, ambientes clicáveis, CEP, formulário, n8n, WhatsApp, analytics |
+| `assets/img/` | Logo original da loja e fotos do catálogo da loja (versões 1024px e 640px; `scene-*` são recortes quadrados para os ambientes) |
+
+## Interações da página
+
+| Elemento | O que faz |
+| --- | --- |
+| **Minha cotação** (botão flutuante no desktop, barra fixa no celular) | Junta os itens adicionados em qualquer parte da página, com quantidade, numa gaveta lateral. Os itens ficam salvos no navegador do visitante (localStorage) e vão para o formulário. |
+| **Seletor de tamanho** | Escolhe 30 a 150 cm e mostra a barra em escala, com o comprimento total da ficha técnica (tamanho + 7 cm). O botão "Consultar este produto" passa a abrir a variação escolhida na loja. |
+| **Cartões de produtos** | Carrossel (setas, arrastar com o mouse, deslizar no celular) com "Adicionar à cotação" e atalhos para a loja. |
+| **Assistente (3 passos)** | Ambiente, se já sabe os modelos e quantos ambientes. Sugere categorias (sem prometer adequação à NBR 9050) e adiciona tudo à cotação de uma vez. |
+| **Ambientes clicáveis** | Quatro fotos do catálogo (banheiro, lavatório, porta, circulação) com pontos que abrem o produto, o link da loja e "Adicionar à cotação". |
+| **CEP** | Consulta a cidade no ViaCEP (serviço público e gratuito). São Paulo capital mostra a mensagem de entrega no mesmo dia "conforme estoque e rota"; as outras cidades, "prazo e frete confirmados na cotação". O CEP do formulário também preenche a cidade sozinho. |
+
+Variações da barra reta inox usadas pelo seletor (produto `81819548`):
+
+| Tamanho | 30 | 40 | 60 | 70 | 80 | 90 | 100 | 120 | 150 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| ID da variação | 317879685 | **317879686** | 317879687 | 317879689 | 317879690 | 1523175228 | 1523175229 | 1523175230 | 1523175233 |
 
 ## Como ver a página
 
-Abra o `index.html` no navegador. Também funciona em qualquer hospedagem estática (Vercel, Netlify, GitHub Pages): é só publicar a pasta inteira. **Ainda não foi publicada em produção.**
+Publicada em **https://reidasbarras.vercel.app** (projeto `reidasbarras` na Vercel, ligado a este repositório). Todo push na `main` publica automaticamente. Para ver localmente, abra o `index.html` no navegador.
 
 ## Produto em destaque (Nuvemshop)
 
@@ -47,8 +64,9 @@ O parâmetro `?variant=317879686` abre a página do produto com 40 cm já seleci
 | Campo | Conteúdo |
 | --- | --- |
 | `nome`, `empresa`, `whatsapp`, `cidade`, `cep` | Obrigatórios |
-| `produtos` | Um valor por item marcado (pode vir repetido) |
-| `produtos_lista` | Os mesmos itens numa linha só, separados por vírgula |
+| `produtos` | Um valor por item da cotação (vem repetido) |
+| `produtos_lista` | Os itens numa linha só, com a quantidade: `Barra reta inox 304 – 40 cm (10); Piso tátil (1)` |
+| `itens_json` | Os mesmos itens em JSON: `[{"name":"Barra reta inox 304 – 40 cm","qty":10}]` |
 | `produtos_detalhes`, `quantidade`, `prazo`, `medidas` | Opcionais |
 | `anexos` | Fotos/lista (até 5 arquivos, 10 MB no total) |
 | `origem` | Sempre `lp-empresas` |
@@ -73,7 +91,8 @@ A página **não carrega nenhum script de analytics**, como combinado. Mesmo ass
 | --- | --- | --- |
 | Clique em qualquer CTA | `select_content` com `content_type: "cta"` e `content_id` (ex.: `hero_orcamento`) | — |
 | Clique em link de WhatsApp | `select_content` com `content_type: "whatsapp"` | `Contact` |
-| "Adicionar à cotação" | `select_content` com `content_type: "quote_item"` | — |
+| "Adicionar à cotação" (cartões, seletor, ambientes, assistente) | `select_content` com `content_type: "quote_item"` | — |
+| Troca de tamanho, passos do assistente, pontos dos ambientes, consulta de CEP | `select_content` com `content_type` `tamanho_barra`, `quiz`, `hotspot`, `ambiente` ou `cep` | — |
 | Formulário enviado ao n8n com sucesso | `generate_lead` com `method: "formulario"` | `Lead` |
 | Envio pelo WhatsApp (modo sem webhook ou com erro) | `generate_lead` com `method: "whatsapp"` | `Lead` |
 
@@ -81,10 +100,9 @@ São nomes de evento padrão do GA4 e da Meta. Nenhum ID de pixel foi criado. Pa
 
 ## Testes feitos
 
-- Navegador real (Chromium) em 320, 390, 768 e 1440 px: sem rolagem horizontal; títulos com no máximo 2 linhas.
-- Todas as âncoras internas, o link do produto e todos os links externos testados (respondem 200, menos o Instagram, que bloqueia robôs).
-- Formulário: validação dos obrigatórios, máscaras de WhatsApp e CEP, envio multipart para um webhook de teste (sucesso e erro 500), modo WhatsApp e eventos no dataLayer.
-- Acessibilidade: axe-core sem violações (390, 768 e 1440 px), navegação por teclado, foco visível, `prefers-reduced-motion`, e a página funciona sem JavaScript.
+- 73 testes automáticos em navegador real (Chromium): seletor de tamanho (variação e medidas certas), carrossel, assistente, ambientes (inclusive pelo teclado), CEP (capital, outra cidade, CEP inexistente), gaveta com quantidades, formulário (validação, máscaras, envio multipart para webhook de teste com sucesso e erro 500, modo WhatsApp) e eventos no dataLayer.
+- Sem rolagem horizontal em 320, 390, 768, 1024 e 1440 px. O título "Consulte prazo e disponibilidade para sua cidade" ocupa 3 linhas em algumas larguras (texto do briefing mantido).
+- Acessibilidade: axe-core sem violações (390 e 1440 px), navegação por teclado, foco visível, `prefers-reduced-motion` (a página fica completa e sem movimento) e conteúdo visível sem JavaScript.
 - Autoteste rápido: abra `index.html?selftest` e veja o console (`selftest ok`).
 
 ## Pontos para o cliente confirmar
