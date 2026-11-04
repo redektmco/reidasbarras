@@ -624,6 +624,7 @@
       var field = document.getElementById(a.getAttribute('data-focus'));
       if (!field) return;
       e.preventDefault();
+      showFormStep(stepOf(field), false);
       field.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'center' });
       field.focus({ preventScroll: true });
     });
@@ -631,7 +632,12 @@
 
   /* ---------- Formulário ---------- */
   var form = document.getElementById('form-cotacao');
-  var errorsBox = document.getElementById('form-errors');
+  var formSteps = $$('[data-form-step]', form);
+  var formBar = $('[data-form-bar]', form);
+  var formLabel = $('[data-form-label]', form);
+  var formMore = $('[data-form-more]', form);
+  var FORM_STEP_NAMES = ['Produtos', 'Contato', 'Entrega', 'Detalhes'];
+  var formStep = 1;
   var statusEl = $('.form-status', form);
   var submitBtn = $('.btn-submit', form);
   var doneBox = document.getElementById('form-done');
@@ -694,15 +700,26 @@
   }
   form.addEventListener('input', function (e) { if (e.target.getAttribute('aria-invalid') === 'true') clearError(e.target); });
 
-  function validate() {
+  // Passo em que cada campo aparece
+  function stepOf(el) {
+    var st = el.closest('[data-form-step]');
+    return st ? Number(st.getAttribute('data-form-step')) : 1;
+  }
+  // Valida um passo (only) ou o formulário inteiro (sem argumento)
+  function validate(only) {
     var problems = [];
-    var check = function (el, ok, msg) { if (ok) { clearError(el); return; } setError(el, msg); problems.push({ el: el, msg: msg }); };
+    var check = function (el, ok, msg) {
+      if (only && stepOf(el) !== only) return;
+      if (ok) { clearError(el); return; }
+      setError(el, msg);
+      problems.push({ el: el, msg: msg, step: stepOf(el) });
+    };
     var f = form.elements;
-    check(document.getElementById('f-produtos'), quote.items.length > 0, 'Adicione ao menos um produto ou "Ainda não sei, preciso de orientação".');
+    check(document.getElementById('f-produtos'), quote.items.length > 0, 'Escolha ao menos um produto ou "Ainda não sei, preciso de orientação".');
     check(f.nome, f.nome.value.trim().length >= 2, 'Informe seu nome.');
-    check(f.empresa, f.empresa.value.trim().length >= 2, 'Informe o nome da empresa.');
     var pd = phoneDigits().length;
     check(phone, pd === 10 || pd === 11, 'Informe o WhatsApp com DDD, por exemplo (11) 99999-9999.');
+    check(f.empresa, f.empresa.value.trim().length >= 2, 'Informe o nome da empresa.');
     check(cep, digits(cep.value).length === 8, 'Informe o CEP com 8 números.');
     check(cidade, cidade.value.trim().length >= 2, 'Informe a cidade de entrega.');
     var list = Array.prototype.slice.call(files.files || []);
@@ -710,26 +727,59 @@
     check(files, list.length <= MAX_FILES && total <= MAX_BYTES, 'Envie até ' + MAX_FILES + ' arquivos, com 10 MB no total. Se precisar, mande o restante pelo WhatsApp.');
     return problems;
   }
-  function focusFirstEmpty() {
-    var order = ['f-nome', 'f-empresa', 'f-whatsapp', 'f-cep', 'f-cidade'];
-    for (var i = 0; i < order.length; i++) {
-      var el = document.getElementById(order[i]);
-      if (!el.value.trim()) { el.focus({ preventScroll: true }); return; }
+  function focusProblem(p) {
+    var el = p.el.tagName === 'FIELDSET' ? $('.chip', p.el) : p.el;
+    if (el) el.focus({ preventScroll: true });
+  }
+
+  // Mostra um passo; focus = true leva o foco ao primeiro campo
+  function showFormStep(n, focus) {
+    n = clamp(n, 1, formSteps.length);
+    formStep = n;
+    formSteps.forEach(function (st) {
+      var on = Number(st.getAttribute('data-form-step')) === n;
+      st.hidden = !on;
+      st.classList.toggle('is-current', on);
+    });
+    formBar.style.setProperty('--q', n / formSteps.length);
+    formLabel.textContent = 'Passo ' + n + ' de ' + formSteps.length + ' · ' + FORM_STEP_NAMES[n - 1];
+    // se a quantidade já veio preenchida (assistente), deixa à vista
+    if (n === formSteps.length && $$('input[type="text"], textarea', formMore).some(function (i) { return i.value.trim(); })) formMore.open = true;
+    if (focus) {
+      var top = form.getBoundingClientRect().top;
+      if (top < 96) window.scrollTo({ top: window.pageYOffset + top - 120, behavior: reduceMotion ? 'auto' : 'smooth' });
+      var cur = formSteps[n - 1];
+      var target = n === 1 ? $('.chip', cur) : $('input:not([type="radio"]), button', cur);
+      if (target) target.focus({ preventScroll: true });
     }
   }
-  function showErrors(problems) {
-    var ul = $('ul', errorsBox);
-    ul.innerHTML = '';
-    problems.forEach(function (p) {
-      var li = document.createElement('li'), a = document.createElement('a');
-      var target = p.el.tagName === 'FIELDSET' ? p.el.querySelector('button, input') : p.el;
-      a.href = '#' + (target.id || p.el.id);
-      a.textContent = p.msg;
-      a.addEventListener('click', function (e) { e.preventDefault(); target.focus(); });
-      li.appendChild(a); ul.appendChild(li);
-    });
-    errorsBox.hidden = false;
-    errorsBox.focus();
+  function nextFormStep() {
+    var problems = validate(formStep);
+    if (problems.length) { focusProblem(problems[0]); return; }
+    track('select_content', { content_type: 'form_step', content_id: 'passo_' + formStep });
+    showFormStep(formStep + 1, true);
+  }
+  form.addEventListener('click', function (e) {
+    if (e.target.closest('[data-form-next]')) nextFormStep();
+    else if (e.target.closest('[data-form-back]')) showFormStep(formStep - 1, true);
+  });
+  // Enter avança de passo em vez de enviar o formulário antes da hora
+  form.addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' || e.target.tagName !== 'INPUT' || e.target.type === 'file' || e.target.type === 'radio') return;
+    if (formStep < formSteps.length) { e.preventDefault(); nextFormStep(); }
+  });
+  showFormStep(1, false);
+
+  // Vindo do carrinho: abre no primeiro passo que ainda falta preencher
+  function focusFirstEmpty() {
+    var f = form.elements;
+    var n = !quote.items.length ? 1
+      : (!f.nome.value.trim() || !phone.value.trim()) ? 2
+      : (!f.empresa.value.trim() || !cep.value.trim() || !cidade.value.trim()) ? 3 : 4;
+    showFormStep(n, false);
+    var cur = formSteps[n - 1];
+    var target = n === 1 ? $('.chip', cur) : $$('input[type="text"], input[type="tel"]', cur).filter(function (i) { return !i.value.trim(); })[0] || $('button', cur);
+    if (target) target.focus({ preventScroll: true });
   }
   function itemsText(sep) { return quote.items.map(function (i) { return i.name + ' (' + i.qty + ')'; }).join(sep); }
   function whatsappMessage() {
@@ -773,8 +823,7 @@
     statusEl.textContent = '';
     fallbackBox.hidden = true;
     var problems = validate();
-    if (problems.length) { showErrors(problems); return; }
-    errorsBox.hidden = true;
+    if (problems.length) { showFormStep(problems[0].step, false); focusProblem(problems[0]); return; }
 
     if (form.elements.site.value) { showDone(); return; } // robô preencheu o campo invisível
 
@@ -820,6 +869,7 @@
     console.assert(phoneDigits().length === 10, 'telefone fixo');
     phone.value = '';
     console.assert(validate().length === (quote.items.length ? 5 : 6), 'formulário vazio aponta os campos obrigatórios');
+    console.assert(validate(2).length === 2 && validate(2).every(function (p) { return p.step === 2; }), 'passo 2 valida só nome e WhatsApp');
     $$('[aria-invalid]', form).forEach(clearError);
     console.info('selftest ok');
   }

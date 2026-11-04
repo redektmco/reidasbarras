@@ -465,7 +465,7 @@
       <div class="container quote-grid">
         <div class="quote-intro">
           <h2 id="quote-title" class="reveal">Solicite uma cotação para sua empresa</h2>
-          <p class="lead reveal">Informe os produtos e as quantidades. Se ainda estiver definindo o que comprar, envie fotos ou medidas do ambiente para receber orientação.</p>
+          <p class="lead reveal">São 4 passos rápidos, menos de 1 minuto. Se ainda estiver definindo o que comprar, envie fotos ou medidas do ambiente para receber orientação.</p>
           <div class="quote-alt reveal">
             <p>Prefere conversar agora?</p>
             <a class="contact-pill" href="https://wa.me/5511997749088?text=Ol%C3%A1!%20Quero%20solicitar%20um%20or%C3%A7amento%20para%20minha%20empresa." target="_blank" rel="noopener" data-track="cotacao_whatsapp" data-channel="whatsapp"><svg class="icon" aria-hidden="true"><use href="#i-whatsapp"/></svg> WhatsApp (11) 99774-9088</a>
@@ -481,118 +481,135 @@
             Enquanto estiver vazio, o envio abre o WhatsApp com a mensagem preenchida.
           -->
           <form id="form-cotacao" class="form" action="" method="post" enctype="multipart/form-data" novalidate>
-            <div class="form-errors" id="form-errors" tabindex="-1" hidden>
-              <p>Confira os campos destacados:</p>
-              <ul></ul>
+            <div class="form-head">
+              <div class="form-progress" aria-hidden="true"><span data-form-bar></span></div>
+              <p class="form-step-label" data-form-label aria-live="polite">Passo 1 de 4 · Produtos</p>
             </div>
 
-            <fieldset class="field products-field" id="f-produtos" aria-describedby="f-produtos-err">
-              <legend>Produtos desejados <span class="req">(adicione ao menos um)</span></legend>
-              <ul class="quote-items" data-quote-items></ul>
-              <p class="quote-empty" data-quote-empty>Nenhum item ainda. Toque nos produtos abaixo para adicionar.</p>
-              <div class="chip-adders" role="group" aria-label="Adicionar produtos">
-                <button class="chip" type="button" data-quote-toggle="Barra reta inox 304 – 40 cm" aria-pressed="false">Barra reta 40 cm inox 304</button>
-                <button class="chip" type="button" data-quote-toggle="Barras de apoio" aria-pressed="false">Barras de apoio</button>
-                <button class="chip" type="button" data-quote-toggle="Piso tátil" aria-pressed="false">Piso tátil</button>
-                <button class="chip" type="button" data-quote-toggle="Torneiras acessíveis" aria-pressed="false">Torneiras acessíveis</button>
-                <button class="chip" type="button" data-quote-toggle="Alarmes audiovisuais" aria-pressed="false">Alarmes audiovisuais</button>
-                <button class="chip" type="button" data-quote-toggle="Placas e sinalização" aria-pressed="false">Placas e sinalização</button>
-                <button class="chip" type="button" data-quote-toggle="Ainda não sei, preciso de orientação" aria-pressed="false">Ainda não sei, preciso de orientação</button>
+            <!-- Passo 1: produtos -->
+            <fieldset class="form-step" data-form-step="1" id="f-produtos" aria-describedby="f-produtos-err">
+              <legend>O que sua empresa precisa?</legend>
+              <p class="form-hint">Toque nos produtos para adicionar. Pode escolher mais de um.</p>
+              <div class="products-box">
+                <ul class="quote-items" data-quote-items></ul>
+                <p class="quote-empty" data-quote-empty>Nenhum item ainda. Toque nos produtos abaixo para adicionar.</p>
+                <div class="chip-adders" role="group" aria-label="Adicionar produtos">
+                  <button class="chip" type="button" data-quote-toggle="Barra reta inox 304 – 40 cm" aria-pressed="false">Barra reta 40 cm inox 304</button>
+                  <button class="chip" type="button" data-quote-toggle="Barras de apoio" aria-pressed="false">Barras de apoio</button>
+                  <button class="chip" type="button" data-quote-toggle="Piso tátil" aria-pressed="false">Piso tátil</button>
+                  <button class="chip" type="button" data-quote-toggle="Torneiras acessíveis" aria-pressed="false">Torneiras acessíveis</button>
+                  <button class="chip" type="button" data-quote-toggle="Alarmes audiovisuais" aria-pressed="false">Alarmes audiovisuais</button>
+                  <button class="chip" type="button" data-quote-toggle="Placas e sinalização" aria-pressed="false">Placas e sinalização</button>
+                  <button class="chip" type="button" data-quote-toggle="Ainda não sei, preciso de orientação" aria-pressed="false">Ainda não sei, preciso de orientação</button>
+                </div>
               </div>
               <p class="field-error" id="f-produtos-err"></p>
+              <div class="form-nav"><button class="btn btn-primary" type="button" data-form-next>Continuar <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
             </fieldset>
 
-            <div class="field-row">
+            <!-- Passo 2: contato -->
+            <fieldset class="form-step" data-form-step="2" hidden>
+              <legend>Como podemos falar com você?</legend>
+              <p class="form-hint">A cotação chega pelo seu WhatsApp.</p>
               <div class="field">
-                <label for="f-nome">Nome <span class="req">(obrigatório)</span></label>
+                <label for="f-nome">Seu nome</label>
                 <input id="f-nome" name="nome" type="text" autocomplete="name" required aria-describedby="f-nome-err">
                 <p class="field-error" id="f-nome-err"></p>
               </div>
               <div class="field">
-                <label for="f-empresa">Empresa <span class="req">(obrigatório)</span></label>
+                <label for="f-whatsapp">WhatsApp</label>
+                <input id="f-whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(11) 99999-9999" required aria-describedby="f-whatsapp-err">
+                <p class="field-error" id="f-whatsapp-err"></p>
+              </div>
+              <div class="form-nav"><button class="btn btn-soft" type="button" data-form-back>Voltar</button><button class="btn btn-primary" type="button" data-form-next>Continuar <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
+            </fieldset>
+
+            <!-- Passo 3: empresa e entrega -->
+            <fieldset class="form-step" data-form-step="3" hidden>
+              <legend>Qual é a empresa e onde entregamos?</legend>
+              <p class="form-hint">Com o CEP, a cidade é preenchida sozinha.</p>
+              <div class="field">
+                <label for="f-empresa">Empresa</label>
                 <input id="f-empresa" name="empresa" type="text" autocomplete="organization" required aria-describedby="f-empresa-err">
                 <p class="field-error" id="f-empresa-err"></p>
               </div>
-            </div>
-
-            <div class="field">
-              <label for="f-whatsapp">WhatsApp <span class="req">(obrigatório)</span></label>
-              <input id="f-whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel-national" placeholder="(11) 99999-9999" required aria-describedby="f-whatsapp-err">
-              <p class="field-error" id="f-whatsapp-err"></p>
-            </div>
-
-            <fieldset class="field-row">
-              <legend>Cidade e CEP <span class="req">(obrigatório)</span></legend>
-              <div class="field">
-                <label for="f-cep">CEP</label>
-                <input id="f-cep" name="cep" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" required aria-describedby="f-cep-help f-cep-err">
-                <p class="field-help" id="f-cep-help">A cidade é preenchida automaticamente.</p>
-                <p class="field-error" id="f-cep-err"></p>
+              <div class="field-row">
+                <div class="field">
+                  <label for="f-cep">CEP</label>
+                  <input id="f-cep" name="cep" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="00000-000" required aria-describedby="f-cep-err">
+                  <p class="field-error" id="f-cep-err"></p>
+                </div>
+                <div class="field">
+                  <label for="f-cidade">Cidade</label>
+                  <input id="f-cidade" name="cidade" type="text" autocomplete="address-level2" required aria-describedby="f-cidade-err">
+                  <p class="field-error" id="f-cidade-err"></p>
+                </div>
               </div>
-              <div class="field">
-                <label for="f-cidade">Cidade</label>
-                <input id="f-cidade" name="cidade" type="text" autocomplete="address-level2" required aria-describedby="f-cidade-err">
-                <p class="field-error" id="f-cidade-err"></p>
-              </div>
+              <div class="form-nav"><button class="btn btn-soft" type="button" data-form-back>Voltar</button><button class="btn btn-primary" type="button" data-form-next>Continuar <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></button></div>
             </fieldset>
 
-            <div class="field-row">
-              <div class="field">
-                <label for="f-quantidade">Quantidade aproximada</label>
-                <input id="f-quantidade" name="quantidade" type="text" placeholder="Ex.: 12 barras e 4 placas">
+            <!-- Passo 4: detalhes opcionais + envio -->
+            <fieldset class="form-step" data-form-step="4" hidden>
+              <legend>Para quando você precisa?</legend>
+              <p class="form-hint">Opcional. Se preferir, é só enviar a cotação agora.</p>
+              <div class="pill-options" role="radiogroup" aria-label="Prazo desejado">
+                <label class="pill"><input type="radio" name="prazo" value="O quanto antes"><span>O quanto antes</span></label>
+                <label class="pill"><input type="radio" name="prazo" value="Em até 15 dias"><span>Em até 15 dias</span></label>
+                <label class="pill"><input type="radio" name="prazo" value="Em até 30 dias"><span>Em até 30 dias</span></label>
+                <label class="pill"><input type="radio" name="prazo" value="Mais de 30 dias"><span>Mais de 30 dias</span></label>
+                <label class="pill"><input type="radio" name="prazo" value="Ainda não sei"><span>Ainda não sei</span></label>
               </div>
-              <div class="field">
-                <label for="f-prazo">Prazo desejado</label>
-                <select id="f-prazo" name="prazo">
-                  <option value="">Selecione</option>
-                  <option>O quanto antes</option>
-                  <option>Em até 15 dias</option>
-                  <option>Em até 30 dias</option>
-                  <option>Mais de 30 dias</option>
-                  <option>Ainda não sei</option>
-                </select>
+
+              <details class="more" data-form-more>
+                <summary>Adicionar quantidade, observações, medidas ou fotos</summary>
+                <div class="more-body">
+                  <div class="field">
+                    <label for="f-quantidade">Quantidade aproximada</label>
+                    <input id="f-quantidade" name="quantidade" type="text" placeholder="Ex.: 12 barras e 4 placas">
+                  </div>
+                  <div class="field">
+                    <label for="f-detalhes">Modelos ou observações sobre os produtos</label>
+                    <textarea id="f-detalhes" name="produtos_detalhes" rows="3"></textarea>
+                  </div>
+                  <div class="field">
+                    <label for="f-medidas">Medidas ou especificações, se souber</label>
+                    <textarea id="f-medidas" name="medidas" rows="3"></textarea>
+                  </div>
+                  <div class="field">
+                    <span class="file-label" id="f-anexos-label">Fotos ou lista de produtos</span>
+                    <label class="dropzone" for="f-anexos" data-dropzone>
+                      <svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg>
+                      <span><strong>Escolher arquivos</strong> ou arraste aqui</span>
+                      <input id="f-anexos" name="anexos" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.txt" aria-labelledby="f-anexos-label" aria-describedby="f-anexos-help f-anexos-err">
+                    </label>
+                    <ul class="file-list" data-file-list></ul>
+                    <p class="field-help" id="f-anexos-help">Até 5 arquivos, 10 MB no total. Fotos, PDF, Word, Excel ou CSV.</p>
+                    <p class="field-error" id="f-anexos-err"></p>
+                  </div>
+                </div>
+              </details>
+
+              <!-- Anti-spam: campo invisível para pessoas -->
+              <div class="hp" aria-hidden="true">
+                <label for="f-site">Não preencha este campo</label>
+                <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">
               </div>
-            </div>
+              <input type="hidden" name="origem" value="lp-empresas">
+              <input type="hidden" name="pagina" value="">
+              <input type="hidden" name="utm_source" value="">
+              <input type="hidden" name="utm_medium" value="">
+              <input type="hidden" name="utm_campaign" value="">
+              <input type="hidden" name="utm_term" value="">
+              <input type="hidden" name="utm_content" value="">
 
-            <div class="field">
-              <label for="f-detalhes">Modelos ou observações sobre os produtos</label>
-              <textarea id="f-detalhes" name="produtos_detalhes" rows="3"></textarea>
-            </div>
+              <p class="privacy">Usamos seus dados apenas para responder a esta cotação, conforme a nossa <a href="https://www.reidasbarrasdeapoio.com.br/politica-de-privacidade/" target="_blank" rel="noopener">Política de privacidade</a>.</p>
 
-            <div class="field">
-              <label for="f-medidas">Medidas ou especificações, se souber</label>
-              <textarea id="f-medidas" name="medidas" rows="3"></textarea>
-            </div>
-
-            <div class="field">
-              <span class="file-label" id="f-anexos-label">Fotos ou lista de produtos (opcional)</span>
-              <label class="dropzone" for="f-anexos" data-dropzone>
-                <svg class="icon" aria-hidden="true"><use href="#i-upload"/></svg>
-                <span><strong>Escolher arquivos</strong> ou arraste aqui</span>
-                <input id="f-anexos" name="anexos" type="file" multiple accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.txt" aria-labelledby="f-anexos-label" aria-describedby="f-anexos-help f-anexos-err">
-              </label>
-              <ul class="file-list" data-file-list></ul>
-              <p class="field-help" id="f-anexos-help">Até 5 arquivos, 10 MB no total. Fotos, PDF, Word, Excel ou CSV.</p>
-              <p class="field-error" id="f-anexos-err"></p>
-            </div>
-
-            <!-- Anti-spam: campo invisível para pessoas -->
-            <div class="hp" aria-hidden="true">
-              <label for="f-site">Não preencha este campo</label>
-              <input id="f-site" name="site" type="text" tabindex="-1" autocomplete="off">
-            </div>
-            <input type="hidden" name="origem" value="lp-empresas">
-            <input type="hidden" name="pagina" value="">
-            <input type="hidden" name="utm_source" value="">
-            <input type="hidden" name="utm_medium" value="">
-            <input type="hidden" name="utm_campaign" value="">
-            <input type="hidden" name="utm_term" value="">
-            <input type="hidden" name="utm_content" value="">
-
-            <p class="privacy">Usamos seus dados apenas para responder a esta cotação, conforme a nossa <a href="https://www.reidasbarrasdeapoio.com.br/politica-de-privacidade/" target="_blank" rel="noopener">Política de privacidade</a>.</p>
-
-            <button class="btn btn-primary btn-submit btn-shine" type="submit">Solicitar minha cotação</button>
-            <p class="form-status" role="status" aria-live="polite"></p>
+              <div class="form-nav is-final">
+                <button class="btn btn-soft" type="button" data-form-back>Voltar</button>
+                <button class="btn btn-primary btn-submit btn-shine" type="submit">Solicitar minha cotação</button>
+              </div>
+              <p class="form-status" role="status" aria-live="polite"></p>
+            </fieldset>
           </form>
 
           <div class="form-done" id="form-done" tabindex="-1" hidden>
