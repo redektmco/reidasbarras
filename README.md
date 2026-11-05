@@ -31,6 +31,20 @@ Variações da barra reta inox usadas pelo seletor (produto `81819548`):
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | ID da variação | 317879685 | **317879686** | 317879687 | 317879689 | 317879690 | 1523175228 | 1523175229 | 1523175230 | 1523175233 |
 
+## Versão B (`/nova`)
+
+A mesma LP com a marca nova: azul `#00386C`, laranja `#FF3900` e a logo branca em caixa alta. Fica em `/nova` (ex.: `reidasbarras.vercel.app/nova`), tem `noindex` e usa o mesmo `main.js` e as mesmas imagens da versão A.
+
+| Arquivo | O que é |
+| --- | --- |
+| `nova/index.html` | Cópia do `index.html` com os caminhos ajustados (`../assets/`), a logo nova e o `noindex` |
+| `assets/css/nova.css` | Só as cores e a logo. Vem depois do `styles.css` e troca as variáveis |
+| `assets/img/logo-nova-branca.png`, `favicon-nova.png` | Logo branca e a coroa laranja usada como ícone da aba |
+
+- Botões laranja usam texto azul escuro (contraste 4,9:1). O texto branco no laranja daria 3,6:1.
+- O formulário envia os mesmos campos; o campo `pagina` traz a URL com `/nova`, então dá para separar A e B no n8n.
+- **Se mudar texto ou seções no `index.html`, repita a mudança em `nova/index.html`.** Mudanças em `styles.css` e `main.js` valem para as duas versões.
+
 ## Como ver a página
 
 Publicada em **https://reidasbarras.vercel.app** (projeto `reidasbarras` na Vercel, ligado a este repositório). Todo push na `main` publica automaticamente. Para ver localmente, abra o `index.html` no navegador.

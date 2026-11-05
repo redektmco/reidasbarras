@@ -1,0 +1,59 @@
+/* Versão B da LP (/nova): mesma página, nova marca.
+   Carregado depois de styles.css: só troca cores e a logo. Azul #00386C e laranja #FF3900. */
+
+:root {
+  --blue: #00386c;
+  --blue-500: #0b4c8a;
+  --blue-700: #002a52;
+  --navy: #001f3d;
+  --navy-2: #00294f;
+  --sky: #e8eef6;
+  --sky-2: #d3dfec;
+  --ink: #0a1c30;
+  --accent: #ff3900;
+  --accent-ink: #00172e; /* texto sobre o laranja: contraste 4,9:1 (branco daria 3,6:1) */
+  --hero-bg: radial-gradient(1100px 620px at 85% 0%, #0a5aa3 0%, rgba(10, 90, 163, 0) 62%),
+             radial-gradient(900px 600px at 0% 100%, #00274d 0%, rgba(0, 39, 77, 0) 60%), #00386c;
+  --shadow-1: 0 1px 2px rgba(0, 31, 61, 0.06), 0 8px 24px rgba(0, 31, 61, 0.08);
+  --shadow-2: 0 2px 6px rgba(0, 31, 61, 0.08), 0 24px 56px rgba(0, 31, 61, 0.16);
+}
+
+/* Botão principal em laranja */
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { background: #ff5222; }
+.btn-primary:focus-visible { outline-color: var(--blue); }
+.btn-white.btn-shine::after { background: linear-gradient(110deg, transparent 35%, rgba(0, 56, 108, 0.16) 50%, transparent 65%); }
+
+/* Cabeçalho azul, para a logo branca */
+.header-pill { background: var(--blue); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.16), var(--shadow-2); }
+.header-logo { display: inline-flex; }
+.header-logo img { width: 124px; }
+.site-header.is-scrolled .header-logo img { width: 110px; }
+.header-nav a { color: #fff; }
+.header-nav a:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+.header-pill :focus-visible { outline-color: #fff; }
+
+/* Rodapé: logo direto no fundo azul, sem a pílula branca */
+.footer-logo { padding: 0; background: none; border-radius: 0; }
+.footer-logo img { width: 190px; height: auto; }
+.footer-menu a, .footer-info a { color: #c9d9ea; }
+.site-footer :focus-visible { outline-color: var(--accent); }
+
+/* Destaques em laranja */
+.scroll-progress span { background: var(--accent); }
+.form-progress span, .quiz-progress span { background: var(--accent); }
+.hero-note .icon, .opt-ico { color: var(--accent); }
+.opt input:focus-visible + .opt-card, .quiz :focus-visible { outline-color: var(--accent); }
+.suggest-row input { accent-color: var(--accent); }
+.quiz-progress { background: rgba(255, 255, 255, 0.18); }
+
+/* Azuis fixos do styles.css trocados pela nova paleta */
+.hero-arch { background: #00274d; }
+.panel-navy { background: radial-gradient(800px 500px at 100% 0%, #0a4a85 0%, rgba(10, 74, 133, 0) 60%), var(--navy); }
+.sizer { box-shadow: inset 0 0 0 1px rgba(0, 56, 108, 0.1); }
+.sizer-wall {
+  background-image: linear-gradient(rgba(0, 56, 108, 0.07) 2px, transparent 2px), linear-gradient(90deg, rgba(0, 56, 108, 0.07) 2px, transparent 2px);
+}
+.size-options span, .chip, .pill span { box-shadow: inset 0 0 0 2px rgba(0, 56, 108, 0.2); }
+.field input:focus, .field select:focus, .field textarea:focus, .cep-row input:focus { box-shadow: 0 0 0 4px rgba(0, 56, 108, 0.18); }
+:focus-visible { outline-color: var(--blue-500); }
