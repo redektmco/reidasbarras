@@ -11,16 +11,15 @@
   --sky-2: #d3dfec;
   --ink: #0a1c30;
   --accent: #ff3900;
-  --accent-ink: #00172e; /* texto sobre o laranja: contraste 5,0:1 (branco daria 3,6:1) */
   --hero-bg: radial-gradient(1100px 620px at 85% 0%, #0a5aa3 0%, rgba(10, 90, 163, 0) 62%),
              radial-gradient(900px 600px at 0% 100%, #00274d 0%, rgba(0, 39, 77, 0) 60%), #00386c;
   --shadow-1: 0 1px 2px rgba(0, 31, 61, 0.06), 0 8px 24px rgba(0, 31, 61, 0.08);
   --shadow-2: 0 2px 6px rgba(0, 31, 61, 0.08), 0 24px 56px rgba(0, 31, 61, 0.16);
 }
 
-/* Botão principal em laranja */
-.btn-primary { background: var(--accent); color: var(--accent-ink); }
-.btn-primary:hover { background: #ff5222; }
+/* Botão principal em laranja, texto branco. Branco no laranja dá 3,6:1: passa só como texto grande, por isso 19px em negrito */
+.btn-primary { background: var(--accent); color: #fff; font-size: 19px; font-weight: 800; }
+.btn-primary:hover { background: #e83400; }
 .btn-primary:focus-visible { outline-color: var(--blue); }
 .btn-white.btn-shine::after { background: linear-gradient(110deg, transparent 35%, rgba(0, 56, 108, 0.16) 50%, transparent 65%); }
 

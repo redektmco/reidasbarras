@@ -41,7 +41,7 @@ A mesma LP com a marca nova: azul `#00386C`, laranja `#FF3900` e a logo branca e
 | `assets/css/nova.css` | Só as cores e a logo. Vem depois do `styles.css` e troca as variáveis |
 | `assets/img/logo-nova-branca.png`, `favicon-nova.png` | Logo branca e a coroa laranja usada como ícone da aba |
 
-- Botões laranja usam texto azul escuro (contraste 5,0:1). O texto branco no laranja daria 3,6:1.
+- Botões laranja usam texto branco em negrito de 19px. O contraste é 3,6:1, que só passa como texto grande (negrito a partir de 18,66px). Não reduza a fonte desses botões.
 - O formulário envia os mesmos campos; o campo `pagina` traz a URL com `/nova`, então dá para separar A e B no n8n.
 - **Se mudar texto ou seções no `index.html`, repita a mudança em `nova/index.html`.** Mudanças em `styles.css` e `main.js` valem para as duas versões.
 
