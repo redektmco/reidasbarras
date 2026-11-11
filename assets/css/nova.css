@@ -60,3 +60,5 @@
 /* Produto em destaque: só o seletor de tamanho, centralizado */
 .featured-grid { grid-template-columns: minmax(0, 720px); justify-content: center; }
 .float-chip small { display: block; font-size: 11px; font-weight: 400; opacity: .75; margin-top: 2px; }
+.form-highlight { display: flex; align-items: center; gap: 10px; padding: 14px 16px; border-radius: 16px; background: var(--sky, #e8f0fa); color: var(--blue, #00386C); font-weight: 700; font-size: 1.05rem; }
+.form-highlight .icon { width: 22px; height: 22px; flex: none; color: var(--orange, #FF3900); }
