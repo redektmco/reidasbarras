@@ -315,13 +315,16 @@
     countTo($('[data-total-num]', sizer), shownTotal, total);
     $('[data-dim-label]', sizer).textContent = total + ' cm';
     shownSize = s.size; shownTotal = total;
-    sizeLink.href = PRODUCT_URL + '?variant=' + s.variant;
-    sizeLink.setAttribute('data-variant-id', s.variant);
-    $('[data-add-size-label]').textContent = 'Adicionar ' + s.size + ' cm à cotação';
+    if (sizeLink) {
+      sizeLink.href = PRODUCT_URL + '?variant=' + s.variant;
+      sizeLink.setAttribute('data-variant-id', s.variant);
+    }
+    var addLabel = $('[data-add-size-label]');
+    if (addLabel) addLabel.textContent = 'Adicionar ' + s.size + ' cm à cotação';
     if (fromUser) track('select_content', { content_type: 'tamanho_barra', content_id: s.size + 'cm' });
   }
   sizeRadios.forEach(function (r) { r.addEventListener('change', function () { updateSize(true); }); });
-  addSizeBtn.addEventListener('click', function () { addItem('Barra reta inox 304 – ' + currentSize().size + ' cm', 1, addSizeBtn); });
+  if (addSizeBtn) addSizeBtn.addEventListener('click', function () { addItem('Barra reta inox 304 – ' + currentSize().size + ' cm', 1, addSizeBtn); });
   if ('ResizeObserver' in window) new ResizeObserver(function () { layoutBar(); }).observe(track_);
   else addEventListener('resize', layoutBar);
   updateSize(false);
@@ -373,17 +376,19 @@
     'Torneiras acessíveis': 'Modelos PCD altos, baixos, de parede e automáticos',
     'Alarmes audiovisuais': 'Acionador de emergência com sinal sonoro e luminoso',
     'Placas e sinalização': 'Identificação de banheiros e portas',
-    'Piso tátil': 'Alerta e direcional para circulação'
+    'Piso tátil': 'Alerta e direcional para circulação',
+    'Chapas para porta': 'Chapas de proteção para portas'
   };
   var SUGGEST = {
     banheiro: ['Barras de apoio', 'Torneiras acessíveis', 'Alarmes audiovisuais', 'Placas e sinalização'],
     lavatorio: ['Torneiras acessíveis', 'Barras de apoio'],
-    portas: ['Placas e sinalização'],
+    portas: ['Placas e sinalização', 'Chapas para porta'],
     circulacao: ['Piso tátil']
   };
   var ORIENTACAO = 'Ainda não sei, preciso de orientação';
   var quiz = $('[data-quiz]');
   var quizSteps = $$('[data-step]', quiz);
+  var QUIZ_ASK = 4; // perguntas; o passo seguinte é a sugestão
   var quizBar = $('[data-quiz-bar]');
   var quizLabel = $('[data-quiz-label]');
   var quizStep = 1;
@@ -395,11 +400,11 @@
       s.hidden = !on;
       s.classList.toggle('is-current', on);
     });
-    quizBar.style.setProperty('--q', Math.min(n, 3) / 3);
-    quizLabel.textContent = n > 3 ? 'Sugestão pronta' : 'Passo ' + n + ' de 3';
+    quizBar.style.setProperty('--q', Math.min(n, QUIZ_ASK) / QUIZ_ASK);
+    quizLabel.textContent = n > QUIZ_ASK ? 'Sugestão pronta' : 'Passo ' + n + ' de ' + QUIZ_ASK;
     if (focus) {
       var cur = quizSteps[n - 1];
-      var target = n > 3 ? cur : cur.querySelector('input');
+      var target = n > QUIZ_ASK ? cur : cur.querySelector('input');
       if (target) target.focus({ preventScroll: true });
     }
   }
@@ -429,11 +434,11 @@
   quiz.addEventListener('click', function (e) {
     if (e.target.closest('[data-quiz-next]')) {
       var stepEl = quizSteps[quizStep - 1];
-      var name = quizStep === 1 ? 'q-ambiente' : quizStep === 2 ? 'q-saber' : 'q-qtd';
+      var name = ['q-uso', 'q-ambiente', 'q-saber', 'q-qtd'][quizStep - 1];
       var err = $('[data-quiz-error]', stepEl);
-      if (!quizValues(name).length) { err.textContent = quizStep === 1 ? 'Escolha ao menos um ambiente.' : 'Escolha uma opção.'; return; }
+      if (!quizValues(name).length) { err.textContent = quizStep === 2 ? 'Escolha ao menos um ambiente.' : 'Escolha uma opção.'; return; }
       err.textContent = '';
-      if (quizStep === 3) { buildSuggestion(); $('[data-quiz-done]', quiz).hidden = true; }
+      if (quizStep === QUIZ_ASK) { buildSuggestion(); $('[data-quiz-done]', quiz).hidden = true; }
       showStep(quizStep + 1, true);
       track('select_content', { content_type: 'quiz', content_id: 'passo_' + quizStep });
     } else if (e.target.closest('[data-quiz-back]')) {
@@ -449,7 +454,9 @@
       if (chosen.length) flyToCart(applyBtn);
       var qtd = quizValues('q-qtd')[0];
       var qField = document.getElementById('f-quantidade');
-      if (qtd && !qField.value) qField.value = 'Ambientes: ' + qtd;
+      var uso = quizValues('q-uso')[0];
+      var notes = [uso && 'Uso: ' + uso, qtd && 'Ambientes: ' + qtd].filter(Boolean).join(' · ');
+      if (notes && !qField.value) qField.value = notes;
       $('[data-quiz-done]', quiz).hidden = false;
       toast(chosen.length ? 'Itens adicionados à sua cotação' : 'Nenhum item marcado');
       track('select_content', { content_type: 'quiz', content_id: 'aplicar', items: chosen.length });
@@ -457,7 +464,7 @@
   });
   // Avança sozinho nas perguntas de escolha única
   quiz.addEventListener('change', function (e) {
-    if (e.target.type === 'radio' && quizStep < 3) setTimeout(function () { $('[data-quiz-next]', quizSteps[quizStep - 1]).click(); }, reduceMotion ? 0 : 260);
+    if (e.target.type === 'radio' && quizStep < QUIZ_ASK) setTimeout(function () { $('[data-quiz-next]', quizSteps[quizStep - 1]).click(); }, reduceMotion ? 0 : 260);
     var err = $('[data-quiz-error]', quizSteps[quizStep - 1]);
     if (err) err.textContent = '';
   });
@@ -636,7 +643,7 @@
   var formBar = $('[data-form-bar]', form);
   var formLabel = $('[data-form-label]', form);
   var formMore = $('[data-form-more]', form);
-  var FORM_STEP_NAMES = ['Produtos', 'Contato', 'Entrega', 'Detalhes'];
+  var FORM_STEP_NAMES = ['Produtos', 'Contato', 'Entrega', 'Confirmação'];
   var formStep = 1;
   var statusEl = $('.form-status', form);
   var submitBtn = $('.btn-submit', form);
@@ -719,7 +726,7 @@
     check(f.nome, f.nome.value.trim().length >= 2, 'Informe seu nome.');
     var pd = phoneDigits().length;
     check(phone, pd === 10 || pd === 11, 'Informe o WhatsApp com DDD, por exemplo (11) 99999-9999.');
-    check(f.empresa, f.empresa.value.trim().length >= 2, 'Informe o nome da empresa.');
+    if (f.empresa) check(f.empresa, f.empresa.value.trim().length >= 2, 'Informe o nome da empresa.');
     check(cep, digits(cep.value).length === 8, 'Informe o CEP com 8 números.');
     check(cidade, cidade.value.trim().length >= 2, 'Informe a cidade de entrega.');
     var list = Array.prototype.slice.call(files.files || []);
@@ -775,7 +782,7 @@
     var f = form.elements;
     var n = !quote.items.length ? 1
       : (!f.nome.value.trim() || !phone.value.trim()) ? 2
-      : (!f.empresa.value.trim() || !cep.value.trim() || !cidade.value.trim()) ? 3 : 4;
+      : ((f.empresa && !f.empresa.value.trim()) || !cep.value.trim() || !cidade.value.trim()) ? 3 : 4;
     showFormStep(n, false);
     var cur = formSteps[n - 1];
     var target = n === 1 ? $('.chip', cur) : $$('input[type="text"], input[type="tel"]', cur).filter(function (i) { return !i.value.trim(); })[0] || $('button', cur);
@@ -785,15 +792,15 @@
   function whatsappMessage() {
     var f = form.elements;
     var lines = [
-      'Olá! Quero solicitar uma cotação para minha empresa.',
+      'Olá! Quero solicitar uma cotação.',
       'Nome: ' + f.nome.value.trim(),
-      'Empresa: ' + f.empresa.value.trim(),
       'WhatsApp: ' + phone.value.trim(),
       'Cidade/CEP: ' + cidade.value.trim() + ' / ' + cep.value.trim(),
       'Produtos (quantidade aproximada): ' + itemsText(', ')
     ];
+    if (f.empresa && f.empresa.value.trim()) lines.splice(2, 0, 'Empresa: ' + f.empresa.value.trim());
     if (f.quantidade.value.trim()) lines.push('Quantidade aproximada: ' + f.quantidade.value.trim());
-    if (f.prazo.value) lines.push('Prazo desejado: ' + f.prazo.value);
+    if (f.prazo && f.prazo.value) lines.push('Prazo desejado: ' + f.prazo.value);
     if (f.produtos_detalhes.value.trim()) lines.push('Observações: ' + f.produtos_detalhes.value.trim());
     if (f.medidas.value.trim()) lines.push('Medidas/especificações: ' + f.medidas.value.trim());
     if (files.files && files.files.length) lines.push('Vou enviar as fotos/arquivos nesta conversa.');
