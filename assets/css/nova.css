@@ -26,8 +26,8 @@
 /* Cabeçalho azul, para a logo branca */
 .header-pill { background: var(--blue); box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.16), var(--shadow-2); }
 .header-logo { display: inline-flex; }
-.header-logo img { width: 124px; }
-.site-header.is-scrolled .header-logo img { width: 110px; }
+.header-logo img { width: 148px; }
+.site-header.is-scrolled .header-logo img { width: 132px; }
 .header-nav a { color: #fff; }
 .header-nav a:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
 .header-pill :focus-visible { outline-color: #fff; }
